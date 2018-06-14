@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Ng2IziToastModule } from 'ng2-izitoast';
 import { PublishedComponent } from './published.component';
 // Import services
-import { SharedModule, PaginationService, ToasterService, ResourceService } from '@sunbird/shared';
+import { SharedModule, PaginationService, ToasterService, ResourceService, ConfigService } from '@sunbird/shared';
 import { SearchService, ContentService } from '@sunbird/core';
 import { WorkSpaceService } from '../../services';
 import { UserService, LearnerService, CoursesService, PermissionService } from '@sunbird/core';
@@ -81,7 +81,18 @@ describe('PublishedComponent', () => {
     expect(component.publishedContent).toBeDefined();
     expect(component.publishedContent.length).toBeGreaterThan(1);
   }));
-
+  it('should show no result message when no content is in response ', inject([SearchService], (searchService) => {
+    spyOn(searchService, 'compositeSearch').and.callFake(() => Observable.of(testData.searchSuccessWithContentZero));
+    component.fetchPublishedContent(9, 1);
+    fixture.detectChanges();
+    expect(component.publishedContent).toBeDefined();
+    expect(component.publishedContent.length).toEqual(0);
+    expect(component.noResult).toBeTruthy();
+    const noResultMessage = {
+      'messageText': resourceBundle.messages.stmsg.m0022
+    };
+    expect(component.noResultMessage).toEqual(noResultMessage);
+  }));
   it('should call delete api and get success response', inject([WorkSpaceService, ActivatedRoute],
     (workSpaceService, activatedRoute, resourceService, http) => {
       spyOn(workSpaceService, 'deleteContent').and.callFake(() => Observable.of(testData.deleteSuccess));
@@ -119,4 +130,12 @@ describe('PublishedComponent', () => {
     expect(component.inview).toHaveBeenCalled();
     expect(component.inviewLogs).toBeDefined();
   });
+  it('should call setpage method and page number should be default, i,e 1', inject([ConfigService, Router],
+    (configService, route) => {
+      component.pager = testData.pager;
+      component.pager.totalPages = 0;
+      component.navigateToPage(3);
+      fixture.detectChanges();
+      expect(component.pageNumber).toEqual(1);
+  }));
 });

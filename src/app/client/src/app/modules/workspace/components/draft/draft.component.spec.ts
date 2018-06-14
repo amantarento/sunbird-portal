@@ -88,6 +88,20 @@ describe('DraftComponent', () => {
     expect(component.draftList.length).toBeGreaterThan(1);
   }));
 
+  it('should show no result message when no content is in response ', inject([SearchService], (searchService) => {
+    spyOn(searchService, 'compositeSearch').and.callFake(() => Observable.of(testData.searchSuccessWithContentZero));
+    component.fetchDrafts(9, 1);
+    fixture.detectChanges();
+    expect(component.draftList).toBeDefined();
+    expect(component.draftList.length).toEqual(0);
+    expect(component.noResult).toBeTruthy();
+    const noResultMessage = {
+      'message': resourceBundle.messages.stmsg.m0008 ,
+      'messageText': resourceBundle.messages.stmsg.m0012
+    };
+    expect(component.noResultMessage).toEqual(noResultMessage);
+  }));
+
   it('should call delete api and get success response', inject([SuiModalService, WorkSpaceService, ActivatedRoute],
     (modalService, workSpaceService, activatedRoute, http) => {
       spyOn(workSpaceService, 'deleteContent').and.callFake(() => Observable.of(testData.deleteSuccess));

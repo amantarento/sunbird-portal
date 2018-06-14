@@ -38,6 +38,13 @@ export const mockRes = {
       'content': []
     }
   },
+  searchSuccessWithContentZero: {
+    'id': 'api.v1.search',
+    'responseCode': 'OK',
+    'result': {
+      'count': 27,
+    }
+  },
   event: {
     'inview': [
       {

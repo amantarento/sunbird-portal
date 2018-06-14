@@ -96,6 +96,23 @@ describe('UpForReviewComponent', () => {
     fixture.detectChanges();
     expect(component.upForReviewContentData).toBeDefined();
   }));
+  it('should show no result message when no content is in response ', inject([SearchService], (searchService) => {
+    const userService = TestBed.get(UserService);
+    const learnerService = TestBed.get(LearnerService);
+    spyOn(learnerService, 'get').and.returnValue(Observable.of(Response.userSuccess.success));
+    userService._userProfile = mockroleOrgMap;
+    userService._userData$.next({ err: null, userProfile: mockUserRoles });
+    spyOn(searchService, 'compositeSearch').and.callFake(() => Observable.of(Response.searchSuccessWithContentZero));
+    component.fecthUpForReviewContent(9, 1, bothParams);
+    fixture.detectChanges();
+    expect(component.upForReviewContentData).toBeDefined();
+    expect(component.noResult).toBeTruthy();
+    const noResultMessage = {
+      'message': resourceBundle.messages.stmsg.m0008,
+      'messageText': resourceBundle.messages.stmsg.m0033
+    };
+    expect(component.noResultMessage).toEqual(noResultMessage);
+  }));
   // if  search api's throw's error
   it('should throw error', inject([SearchService], (searchService) => {
     const userService = TestBed.get(UserService);
@@ -124,10 +141,53 @@ describe('UpForReviewComponent', () => {
   it('should call inview method for visits data', () => {
     component.telemetryImpression = Response.telemetryData;
     spyOn(component, 'inview').and.callThrough();
-    component.inview(Response.event.inview);
+    component.inview(Response.event);
     expect(component.inview).toHaveBeenCalled();
     expect(component.inviewLogs).toBeDefined();
   });
+  it('should call setpage method and set proper page number', inject([ConfigService, Router],
+    (configService, route) => {
+      const userService = TestBed.get(UserService);
+      const learnerService = TestBed.get(LearnerService);
+      spyOn(learnerService, 'get').and.returnValue(Observable.of(Response.userSuccess.success));
+      userService._userProfile = mockroleOrgMap;
+      userService._userData$.next({ err: null, userProfile: mockUserRoles });
+      const sortByOption = 'Created On';
+      const queryParams = {subject: [ 'english', 'odia' ], sortType: 'asc', sort_by: 'Created On'};
+      component.queryParams = queryParams;
+      component.pager = Response.pager;
+      component.pager.totalPages = 8;
+      component.navigateToPage(1);
+      fixture.detectChanges();
+      expect(route.navigate).toHaveBeenCalledWith(['workspace/content/upForReview', 1], {queryParams: queryParams});
+  }));
+
+  it('should call setpage method and page number should be default, i,e 1', inject([ConfigService, Router],
+    (configService, route) => {
+       const userService = TestBed.get(UserService);
+      const learnerService = TestBed.get(LearnerService);
+      spyOn(learnerService, 'get').and.returnValue(Observable.of(Response.userSuccess.success));
+      userService._userProfile = mockroleOrgMap;
+      userService._userData$.next({ err: null, userProfile: mockUserRoles });
+      component.pager = Response.pager;
+      component.pager.totalPages = 0;
+      component.navigateToPage(3);
+      fixture.detectChanges();
+      expect(component.pageNumber).toEqual(1);
+  }));
+
+   it('should open contentplayer  on list click   ', inject([WorkSpaceService, Router],
+    (workSpaceService, route, http) => {
+      const userService = TestBed.get(UserService);
+      const learnerService = TestBed.get(LearnerService);
+      spyOn(learnerService, 'get').and.returnValue(Observable.of(Response.userSuccess.success));
+      userService._userProfile = mockroleOrgMap;
+      userService._userData$.next({ err: null, userProfile: mockUserRoles });
+      spyOn(component, 'contentClick').and.callThrough();
+      component.contentClick(Response.upforReviewContentData);
+      component.state = 'upForReview';
+      expect(route.navigate).toHaveBeenCalledWith(['workspace/content/upForReview/content', 'do_1125083103747932161150']);
+    }));
 });
 
 

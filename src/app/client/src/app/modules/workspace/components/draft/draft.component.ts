@@ -195,7 +195,8 @@ export class DraftComponent extends WorkSpace implements OnInit {
         };
         this.search(searchParams).subscribe(
             (data: ServerResponse) => {
-                if (data.result.count && data.result.content.length > 0) {
+                if (data.result.count && data.result.content &&
+                    data.result.content.length > 0) {
                     this.totalCount = data.result.count;
                     this.pager = this.paginationService.getPager(data.result.count, this.pageNumber, this.pageLimit);
                     const constantData = this.config.appConfig.WORKSPACE.Draft.constantData;
@@ -203,6 +204,7 @@ export class DraftComponent extends WorkSpace implements OnInit {
                     const dynamicFields = this.config.appConfig.WORKSPACE.Draft.dynamicFields;
                     this.draftList = this.workSpaceService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
                     this.showLoader = false;
+                    this.noResult = false;
                 } else {
                     this.showError = false;
                     this.noResult = true;

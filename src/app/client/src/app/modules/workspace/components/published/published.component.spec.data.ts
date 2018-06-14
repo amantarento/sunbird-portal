@@ -34,6 +34,17 @@ export const mockRes = {
     'responseCode': 'OK',
     'result': []
   },
+  pager: {
+    'totalItems': 1173, 'currentPage': 3, 'pageSize': 25, 'totalPages': 47,
+    'startPage': 30, 'endPage': 34, 'startIndex': 725, 'endIndex': 749, 'pages': [30, 31, 32, 33, 34]
+  },
+  searchSuccessWithContentZero: {
+    'id': 'api.v1.search',
+    'responseCode': 'OK',
+    'result': {
+      'count': 27,
+    }
+  },
   event: {
     'inview': [
       {

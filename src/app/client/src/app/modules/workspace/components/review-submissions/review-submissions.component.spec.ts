@@ -86,6 +86,19 @@ describe('ReviewSubmissionsComponent', () => {
     expect(component.reviewContent).toBeDefined();
     expect(component.reviewContent.length).toBeGreaterThan(1);
   }));
+  it('should show no result message when no content is in response ', inject([SearchService], (searchService) => {
+    spyOn(searchService, 'compositeSearch').and.callFake(() => Observable.of(testData.searchSuccessWithContentZero));
+    component.fetchReviewContents(9, 1);
+    fixture.detectChanges();
+    expect(component.reviewContent).toBeDefined();
+    expect(component.reviewContent.length).toEqual(0);
+    expect(component.noResult).toBeTruthy();
+    const noResultMessage = {
+      'message': resourceBundle.messages.stmsg.m0008 ,
+      'messageText': resourceBundle.messages.stmsg.m0033
+    };
+    expect(component.noResultMessage).toEqual(noResultMessage);
+  }));
 
   // if  search api's throw's error
   it('should throw error', inject([SearchService], (searchService) => {

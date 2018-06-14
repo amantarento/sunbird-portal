@@ -173,5 +173,12 @@ export const mockRes = {
       }
     ],
     'direction': 'up'
+  },
+   searchSuccessWithContentZero: {
+    'id': 'api.v1.search',
+    'responseCode': 'OK',
+    'result': {
+      'count': 27,
+    }
   }
 };

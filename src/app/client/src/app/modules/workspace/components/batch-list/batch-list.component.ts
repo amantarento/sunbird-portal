@@ -198,7 +198,8 @@ export class BatchListComponent extends WorkSpace implements OnInit {
     };
     this.getBatches(searchParams).subscribe(
       (data: ServerResponse) => {
-        if (data.result.response.count && data.result.response.content.length > 0) {
+        if (data.result.response.count && data.result.response.content &&
+          data.result.response.content.length > 0) {
           this.noResult = false;
           this.batchList = data.result.response.content;
           this.totalCount = data.result.response.count;

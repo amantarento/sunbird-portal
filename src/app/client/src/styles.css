@@ -3082,7 +3082,7 @@ li.pure-checkbox{
   margin:0;
 }
 angular2-multiselect .select-all{
-  padding: 10px 18px 10px 10px;
+  padding: 10px;
 }
 .pure-checkbox input[type="checkbox"]+label{
   padding: 0 2em 0 0 !important;

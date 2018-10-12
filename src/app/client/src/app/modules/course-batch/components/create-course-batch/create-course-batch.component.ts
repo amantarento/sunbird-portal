@@ -189,6 +189,11 @@ export class CreateCourseBatchComponent implements OnInit, OnDestroy {
         this.disableSubmitBtn = true;
       }
     });
+    // if (this.addbatchmembers && this.addbatchmembers.selectedOrg.length > 0) {
+    //   this.disableSubmitBtn = true;
+    // } else {
+    //   this.disableSubmitBtn = false;
+    // }
   }
 
   public createBatch() {
@@ -318,6 +323,13 @@ export class CreateCourseBatchComponent implements OnInit, OnDestroy {
   */
   navigateToStep(step): void {
     this.batchStep = step;
+    if (step === 'addmember') {
+      if (this.addbatchmembers && this.addbatchmembers.selectedOrg.length>0){
+        this.disableSubmitBtn = true;
+      } else {
+        this.disableSubmitBtn = false;
+      }
+    }
   }
   ngOnDestroy() {
     if (this.createBatchModel && this.createBatchModel.deny) {

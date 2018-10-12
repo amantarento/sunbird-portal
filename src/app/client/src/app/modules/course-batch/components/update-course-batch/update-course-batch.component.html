@@ -104,7 +104,7 @@
         {{resourceService?.frmelmnts?.btn?.updatebatch}}</button>
     </div>
     <div *ngIf="batchUpdateForm.value.enrollmentType === 'open'">
-      <button appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="updateBatchInteractEdata"
+      <button [disabled]="disableSubmitBtn" appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="updateBatchInteractEdata"
         class="ui primary button" id="submitbutton" (click)="updateBatch()" tabindex="0">
         {{resourceService?.frmelmnts?.btn?.updatebatch}}</button>
     </div>

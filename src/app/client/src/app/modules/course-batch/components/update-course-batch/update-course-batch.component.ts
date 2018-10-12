@@ -219,7 +219,8 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
       enrollmentType: this.batchUpdateForm.value.enrollmentType,
       startDate: startDate,
       endDate: endDate || null,
-      createdFor: this.userService.userProfile.organisationIds,
+      createdFor: this.addbatchmembers && this.addbatchmembers.selectedOrg ? _.map(this.addbatchmembers.selectedOrg, 'id') :
+      this.userService.userProfile.organisationIds,
       mentors: this.addbatchmembers && this.addbatchmembers.selectedMentorList ?
         _.union(_.map(this.addbatchmembers.selectedMentorList, 'id'), this.batchDetails.mentors) : [],
     };

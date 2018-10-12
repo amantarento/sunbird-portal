@@ -193,6 +193,10 @@ export class AddBatchMembersComponent implements OnInit {
         this.toasterService.error(this.resourceService.messages.emsg.m0005);
       }
     );
+    // if (this.batchDetails && this.batchDetails.participant ||
+    //   (this.batchDetails && this.batchDetails.mentors && this.batchDetails.mentors.length > 0)) {
+    //   this.getSubOrgDetails(this.batchDetails.createdFor);
+    // }
   }
   private getSubOrgDetails(rootOrgId) {
     this.searchService.getSubOrganisationDetails({ rootOrgId: rootOrgId }).pipe(
@@ -203,6 +207,7 @@ export class AddBatchMembersComponent implements OnInit {
             const subOrganization = [];
             if (data.result.response.content && data.result.response.content.length > 0) {
               this.subOrganizations = data.result.response.content;
+              // this.selectedOrg = this.subOrganizations;
             }
             const mentorOrg = this.userService.userProfile.roleOrgMap['COURSE_MENTOR'];
             if (mentorOrg && mentorOrg.includes(this.userService.rootOrgId)) {

@@ -105,7 +105,7 @@
       </button>
     </div>
     <div *ngIf="createBatchForm.value.enrollmentType === 'open'">
-      <button appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="createInteractEdata"
+      <button [disabled]="disableSubmitBtn" appTelemetryInteract [telemetryInteractObject]="telemetryInteractObject" [telemetryInteractEdata]="createInteractEdata"
         class="ui primary button" id="submitbutton" (click)="createBatch()" tabindex="0">
         {{resourceService?.frmelmnts?.btn?.createbatch}}
       </button>

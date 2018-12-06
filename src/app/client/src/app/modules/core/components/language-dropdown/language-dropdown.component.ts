@@ -1,13 +1,14 @@
 
 import { takeUntil, first } from 'rxjs/operators';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormService, FrameworkService, OrgDetailsService } from './../../services';
 import { ConfigService, ResourceService, ToasterService, ServerResponse, Framework } from '@sunbird/shared';
 import { CacheService } from 'ng2-cache-service';
 
 import { Subject, Subscription } from 'rxjs';
-
+import { DOCUMENT } from '@angular/platform-browser';
+import * as _ from 'lodash';
 @Component({
   selector: 'app-language-dropdown',
   templateUrl: './language-dropdown.component.html',
@@ -30,18 +31,19 @@ export class LanguageDropdownComponent implements OnInit, OnDestroy {
     public orgDetailsService: OrgDetailsService,
     public formService: FormService, public toasterService: ToasterService,
     private _cacheService: CacheService, public frameworkService: FrameworkService,
-    public configService: ConfigService, public resourceService: ResourceService) { }
+    public configService: ConfigService, public resourceService: ResourceService,
+    @Inject(DOCUMENT) private _document: any) { }
 
   ngOnInit() {
     this.getChannelId();
-   this.isCachedDataExists = this._cacheService.exists('portalLanguage');
-   if (this.isCachedDataExists) {
-     const data: any | null = this._cacheService.get('portalLanguage');
-     this.selectedLanguage = data;
-     this.resourceService.getResource(this.selectedLanguage);
-   } else {
-    this.selectedLanguage = 'en';
-   }
+    this.isCachedDataExists = this._cacheService.exists('portalLanguage');
+    if (this.isCachedDataExists) {
+      const data: any | null = this._cacheService.get('portalLanguage');
+      this.selectedLanguage = data.value;
+      this.resourceService.getResource(this.selectedLanguage);
+    } else {
+      this.selectedLanguage = 'en';
+    }
   }
 
   getChannelId() {
@@ -70,7 +72,7 @@ export class LanguageDropdownComponent implements OnInit, OnDestroy {
       this.formService.getFormConfig(formServiceInputParams, this.channelId).pipe(
         takeUntil(this.unsubscribe))
         .subscribe(
-          (data: ServerResponse) => {
+          (data: any) => {
             this.languages = data[0].range;
             this._cacheService.set(this.filterEnv + this.formAction, data,
               {
@@ -86,15 +88,23 @@ export class LanguageDropdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLanguageChange(event) {
-   this._cacheService.set('portalLanguage' , event,
-    {
-      maxAge: this.configService.appConfig.cacheServiceConfig.setTimeInMinutes *
-        this.configService.appConfig.cacheServiceConfig.setTimeInSeconds
-    });
+  onLanguageChange(event, languages?: Array<any>) {
+    const lang =  _.find(languages, {'value': event});
+    this._cacheService.set('portalLanguage', lang,
+      {
+        maxAge: this.configService.appConfig.cacheServiceConfig.setTimeInMinutes *
+          this.configService.appConfig.cacheServiceConfig.setTimeInSeconds
+      });
     this.resourceService.getResource(event);
+    this.changeLanguageAttribute();
   }
-
+  changeLanguageAttribute() {
+    const languageData = this._cacheService.get('portalLanguage');
+    if (languageData) {
+      this._document.documentElement.lang = languageData.value;
+      this._document.documentElement.dir =  languageData.dir;
+    }
+  }
   ngOnDestroy() {
     this.orgDetailsUnsubscribe.unsubscribe();
     this.unsubscribe.next();
